@@ -5,6 +5,9 @@ package com.mycompany.hashtable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HashTableGUI extends JFrame {
     private HashTable hashTable;
@@ -13,7 +16,7 @@ public class HashTableGUI extends JFrame {
         hashTable = new HashTable(10);
 
         setTitle("Tabla Hash con Probing Cuadrático");
-        setSize(400, 300);
+        setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -44,12 +47,31 @@ public class HashTableGUI extends JFrame {
         JButton btnDelete = new JButton("Eliminar");
         btnDelete.setBounds(260, 100, 100, 30);
         add(btnDelete);
+        
+        JButton btnLoadFile= new JButton("Cargar archivo");
+        btnLoadFile.setBounds(20, 260, 150, 30);
+        add(btnLoadFile);
+        
+        JButton btnShowAll = new JButton("Mostrar todo");
+        btnShowAll.setBounds(200, 260, 150, 30);
+        add(btnShowAll);
 
         JTextArea output = new JTextArea();
         output.setBounds(20, 150, 340, 100);
         output.setEditable(false);
         add(output);
 
+        
+    btnShowAll.addActionListener((ActionEvent e) -> {
+    String allData = hashTable.toString();
+    if (allData.isEmpty()) {
+        output.setText("La tabla hash está vacía.");
+    } else {
+        output.setText(allData);
+    }
+}); 
+        
+        
 btnInsert.addActionListener((ActionEvent e) -> {
     String key = txtKey.getText();
     String value = txtValue.getText();
@@ -85,6 +107,32 @@ btnSearch.addActionListener((ActionEvent e) -> {
     }
 });
 
+    
+btnLoadFile.addActionListener((ActionEvent e) -> {
+    JFileChooser fileChooser= new JFileChooser();
+    int option= fileChooser.showOpenDialog(this);
+    if(option== JFileChooser.APPROVE_OPTION){
+        java.io.File file= fileChooser.getSelectedFile();
+        try(java.util.Scanner scanner= new java.util.Scanner(file)){
+            int count= 0;
+            while(scanner.hasNextLine()){
+                String line= scanner.nextLine();
+                String[]parts= line.split(",");
+                if(parts.length>= 2){
+                    String key= parts[0].trim();
+                    String value= parts[1].trim();
+                    hashTable.put(key, value);
+                    count++;
+                }
+            }
+            output.setText("Archivo cargado con éxito. Total claves insertadas: " + count);
+        } catch (Exception ex) {
+            output.setText("Error al leer el archivo: " );
+        }
+    }
+});
+
+    
 
         setVisible(true);
     }

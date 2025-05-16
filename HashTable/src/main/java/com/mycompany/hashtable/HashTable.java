@@ -48,6 +48,19 @@ public class HashTable {
             values[index] = value;
         }
     }
+    
+    public String toString(){
+        StringBuilder sb= new StringBuilder();
+        for(int i =0; i< keys.length; i++){
+            if(keys[i]!=null){
+                sb.append("Indice ").append(i)
+                .append(": ").append(keys[i])
+                .append(" -> ").append(values[i]).append("\n");
+            }
+        }
+        return sb.toString();
+    }
+    
 
     private void rehash(){
         int oldCapacity = size;
